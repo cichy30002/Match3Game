@@ -4,15 +4,16 @@ using UnityEngine;
 
 public class Cell : MonoBehaviour
 {
-	public SpriteRenderer SpriteRenderer;
+	public SpriteRenderer spriteRenderer;
 	public Sprite ActiveSprite;
 	public Sprite DisabledSprite;
+	public Sprite SelectedSprite;
     // Start is called before the first frame update
     void Start()
     {
-        if(SpriteRenderer == null)
+        if(spriteRenderer == null)
 		{
-			SpriteRenderer = gameObject.GetComponent<SpriteRenderer>();
+			spriteRenderer = gameObject.GetComponent<SpriteRenderer>();
 		}
     }
 	
@@ -21,10 +22,13 @@ public class Cell : MonoBehaviour
 		switch(name)
 		{
 			case "default":
-				SpriteRenderer.sprite = ActiveSprite;
+				spriteRenderer.sprite = ActiveSprite;
 				break;
 			case "disabled":
-				SpriteRenderer.sprite = DisabledSprite;
+				spriteRenderer.sprite = DisabledSprite;
+				break;
+			case "selected":
+				spriteRenderer.sprite = SelectedSprite;
 				break;
 		}
 	}

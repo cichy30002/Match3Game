@@ -155,6 +155,8 @@ MonoBehaviour:
   board: {fileID: 2009335421}
   VegePrefab: {fileID: 6655383168665898893, guid: 004af3af756bcdd478d59c950c48b31c, type: 3}
   VegetablesParent: {fileID: 742059876}
+  swapingTime: 0.2
+  fallingTime: 0.5
 --- !u!4 &248903615
 Transform:
   m_ObjectHideFlags: 0
@@ -311,6 +313,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 99e7850171882cf459e7e2bd85950699, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  board: {fileID: 2009335421}
+  levelManager: {fileID: 248903614}
+  ClickTimeThreshold: 0.1
+  ClickDistTreshold: 0.1
 --- !u!4 &757752831
 Transform:
   m_ObjectHideFlags: 0
@@ -355,7 +361,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   levelManager: {fileID: 248903614}
-  LevelLayoutTxt: {fileID: 4900000, guid: 8766aaf478e8cbf4191197c7b38bd0cb, type: 3}
+  LevelLayoutTxt: {fileID: 4900000, guid: 1cf991a9be8715440b82235d41bbdd82, type: 3}
   CellPrefab: {fileID: 5275000397810199690, guid: 406b5655ba3d5a8488cbec7029239d28, type: 3}
   CellSize: 1.03
   xSize: 0

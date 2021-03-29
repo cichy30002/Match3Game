@@ -20,7 +20,8 @@ public class Board : MonoBehaviour
 	};
 	public Dictionary<int, string> GridNotationDict = new Dictionary<int, string>() {
 		{ 1, "default" },
-		{ 0, "disabled" }
+		{ 0, "disabled" },
+		{ 2, "selected" }
 	};
 
 	private int[,] levelGrid;
@@ -39,7 +40,7 @@ public class Board : MonoBehaviour
 	}
 	void FirstVegeCheck()
 	{
-		List<LevelManager.Triplet> triplets =  levelManager.Find3();
+		levelManager.FirstVegeCheck();
 
 	}
 	void ProcessTextLayout(string levelLayout)
@@ -140,5 +141,45 @@ public class Board : MonoBehaviour
 			return "error!";
 		}
 		return GridNotationDict[levelGrid[x, y]];
+	}
+	public Vector2Int FindNearestCell(Vector2 point)
+	{
+		Vector2Int result = new Vector2Int(-1,-1);
+		float minDist = CellSize;
+		for (int i = 0; i < ySize; i++)
+		{
+			for (int j = 0; j < xSize; j++)
+			{
+				if(Vector2.Distance(point, cordGrid[j,i]) < minDist)
+				{
+					result = new Vector2Int(j, i);
+					minDist = Vector2.Distance(point, cordGrid[j, i]);
+				}
+			}
+		}
+		return result;
+	}
+	public void SelectCell(int x, int y,bool value = true)
+	{
+		if(x<0 || x>=xSize || y<0 || y>=ySize)
+		{
+			Debug.LogError("You want to select cell that does not exist!");
+			return;
+		}
+		if(levelGrid[x,y]==0)
+		{
+			return;
+		}
+		if(value)
+		{
+			levelGrid[x, y] = 2;
+			cellArr[x, y].SetSprite("selected");
+		}
+		else
+		{
+			levelGrid[x, y] = 1;
+			cellArr[x, y].SetSprite("default");
+		}
+		
 	}
 }

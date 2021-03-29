@@ -95,6 +95,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 29eb6941d9401bd4ba933de0c86fb28c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  SpriteRenderer: {fileID: 2741283313873663953}
+  spriteRenderer: {fileID: 2741283313873663953}
   ActiveSprite: {fileID: 21300000, guid: 75d833265e2ccf84585a7f0b2f0fc426, type: 3}
   DisabledSprite: {fileID: 0}
+  SelectedSprite: {fileID: 21300000, guid: cf42f53f425cf744880e0c6627c4674e, type: 3}

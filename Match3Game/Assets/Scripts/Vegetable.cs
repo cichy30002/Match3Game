@@ -17,28 +17,8 @@ public class Vegetable : MonoBehaviour
 	public Sprite Garlic;
 	private void Start()
 	{
-		Type = RandomVegeType();
-		switch(Type)
-		{
-			case VegeType.Broccoli:
-				spriteRenderer.sprite = Broccoli;
-				break;
-			case VegeType.Carrot:
-				spriteRenderer.sprite = Carrot;
-				break;
-			case VegeType.Chili:
-				spriteRenderer.sprite = Chili;
-				break;
-			case VegeType.Eggplant:
-				spriteRenderer.sprite = Eggplant;
-				break;
-			case VegeType.Garlic:
-				spriteRenderer.sprite = Garlic;
-				break;
-			case VegeType.Potato:
-				spriteRenderer.sprite = Potato;
-				break;
-		}
+		SetVegeType( RandomVegeType());
+		
 	}
 	public enum VegeType
 	{
@@ -59,5 +39,30 @@ public class Vegetable : MonoBehaviour
 		int winner = UnityEngine.Random.Range(0, values.Length - 1);
 		return (VegeType)values.GetValue(winner);
 
+	}
+	public void SetVegeType(VegeType type)
+	{
+		Type = type;
+		switch (Type)
+		{
+			case VegeType.Broccoli:
+				spriteRenderer.sprite = Broccoli;
+				break;
+			case VegeType.Carrot:
+				spriteRenderer.sprite = Carrot;
+				break;
+			case VegeType.Chili:
+				spriteRenderer.sprite = Chili;
+				break;
+			case VegeType.Eggplant:
+				spriteRenderer.sprite = Eggplant;
+				break;
+			case VegeType.Garlic:
+				spriteRenderer.sprite = Garlic;
+				break;
+			case VegeType.Potato:
+				spriteRenderer.sprite = Potato;
+				break;
+		}
 	}
 }
