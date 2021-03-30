@@ -182,4 +182,9 @@ public class Board : MonoBehaviour
 		}
 		
 	}
+	public bool isCellEnabled(int x,int y)
+	{
+		if (levelGrid[x, y] != 0) return true;
+		return false;
+	}
 }

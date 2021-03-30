@@ -47,11 +47,55 @@ public class LevelManager : MonoBehaviour
 						{
 							if (gameGrid[j, i].Type == gameGrid[j + 1, i].Type && gameGrid[j, i].Type == gameGrid[j + 2, i].Type)
 							{
-								//Debug.Log("tripe: " + j + " " + i + " " + gameGrid[j, i].Type);
-								Vector2Int[] tmp = new Vector2Int[3];
-								tmp[0] = new Vector2Int(j, i);
-								tmp[1] = new Vector2Int(j + 1, i);
-								tmp[2] = new Vector2Int(j + 2, i);
+								int count = 3;
+								while(j+count<board.xSize && gameGrid[j + count, i] != null && gameGrid[j, i].Type == gameGrid[j + count, i].Type)
+								{
+									count++;
+								}
+								Vector2Int[] tmp = new Vector2Int[count];
+								Vector2Int[] tmp2 = new Vector2Int[0];
+								int count2 = 0;
+								for (int x = 0; x < count; x++)
+								{
+									if (i + 2 < board.ySize)
+									{
+										if (gameGrid[j + x, i + 1] != null && gameGrid[j + x, i + 2] != null)
+										{
+											if (gameGrid[j, i].Type == gameGrid[j + x, i + 1].Type && gameGrid[j, i].Type == gameGrid[j + x, i + 2].Type)
+											{
+												Debug.Log("found!");
+												count2 = 3;
+												while (i + count2 < board.ySize && gameGrid[j + x, i + count2] != null && gameGrid[j + x, i + count2].Type == gameGrid[j + x, i + count2].Type)
+												{
+													count2++;
+												}
+												tmp2 = new Vector2Int[count2];
+												for (int y = 0; y < count2; y++)
+												{
+													tmp2[y] = new Vector2Int(j + x, i + y);
+												}
+											}
+										}
+									}
+									tmp[x] = new Vector2Int(j+x, i);
+								}
+								Vector2Int[] res = new Vector2Int[count + count2];
+								for (int x = 0; x < count+count2; x++)
+								{
+									if(x<count)
+									{
+										res[x] = tmp[x];
+									}
+									else
+									{
+										res[x] = tmp2[x - count];
+									}
+								}
+								if(count2!=0)
+								{
+									Debug.Log(count + " " + count2);
+								}
+								
 								result.Add(tmp);
 							}
 						}
@@ -62,7 +106,6 @@ public class LevelManager : MonoBehaviour
 						{
 							if (gameGrid[j, i].Type == gameGrid[j, i + 1].Type && gameGrid[j, i].Type == gameGrid[j, i + 2].Type)
 							{
-								//Debug.Log("tripe: " + j + " " + i + " " + gameGrid[j, i].Type);
 								Vector2Int[] tmp = new Vector2Int[3];
 								tmp[0] = new Vector2Int(j, i);
 								tmp[1] = new Vector2Int(j, i + 1);
@@ -186,33 +229,58 @@ public class LevelManager : MonoBehaviour
 		{
 			for (int j = 0; j < board.xSize; j++)
 			{
-				if(refillInstructions[j,i] == -1)
+				if (!board.isCellEnabled(j, i))
 				{
-					for (int x = i+1; x < board.xSize; x++)
-					{
-						if(refillInstructions[j, x] == 0)
-						{
-							refillInstructions[j, x] = -1;
-							refillInstructions[j, i] = x-i;
-							break;
-						}
-					}
-					if(refillInstructions[j, i] == -1)
-					{
-						refillInstructions[j, i] = newVegeInstructions[j];
-					}
+					refillInstructions[j, i] = -2;
 				}
 			}
 		}
+		for (int i = 0; i < board.ySize; i++)
+		{
+			for (int j = 0; j < board.xSize; j++)
+			{
+				if(refillInstructions[j,i] == -1)
+				{
+					for (int y = i+1; y <= board.ySize; y++)
+					{
+						if(y == board.ySize)
+						{
+							refillInstructions[j, i] = y - i;
+							break;
+						}
+						if(refillInstructions[j, y] == 0)
+						{
+							refillInstructions[j, y] = -1;
+							refillInstructions[j, i] = y-i;
+							break;
+						}
+					}
+					if (!board.isCellEnabled(j, i))
+						refillInstructions[j, i] = 0;
+				}
+			}
+		}
+		/*
+		string tmp = "";
+		for (int i = 0; i < board.ySize; i++)
+		{
+			for (int j = 0; j < board.xSize; j++)
+			{
+				tmp += refillInstructions[j, i];
+			}
+			tmp += "\n";
+		}
+		Debug.Log(tmp);
+		*/
 		int[] counts = new int[board.xSize];
 		for (int i = 0; i < board.ySize; i++)
 		{
 			
 			for (int j = 0; j < board.xSize; j++)
 			{
-				if(refillInstructions[j,i]>0)
+				if(refillInstructions[j,i]>0 && board.isCellEnabled(j,i))
 				{
-					if(i+refillInstructions[j,i]<board.ySize)
+					if(i+refillInstructions[j,i]<board.ySize )
 					{
 						gameGrid[j, i] = gameGrid[j, i + refillInstructions[j, i]];
 						vegeTransforms[j, i] = vegeTransforms[j, i + refillInstructions[j, i]];
@@ -229,7 +297,6 @@ public class LevelManager : MonoBehaviour
 				
 					
 			}
-			
 		}
 		yield return StartCoroutine(FillLerp(refillInstructions));
 		yield return new WaitForSeconds(0.1f);
@@ -243,7 +310,7 @@ public class LevelManager : MonoBehaviour
 		{
 			for (int j = 0; j < board.xSize; j++)
 			{
-				if(refillInstr[j,i] != 0)
+				if(refillInstr[j,i] > 0)
 				{
 					startingPositions[j, i] = vegeTransforms[j, i].position;
 				}
@@ -256,7 +323,7 @@ public class LevelManager : MonoBehaviour
 			{
 				for (int j = 0; j < board.xSize; j++)
 				{
-					if(refillInstr[j,i] != 0)
+					if(refillInstr[j,i] > 0)
 						vegeTransforms[j,i].position = Vector2.Lerp(startingPositions[j,i], board.cordGrid[j,i], (Time.time - startTime) / fallingTime);
 						
 				}

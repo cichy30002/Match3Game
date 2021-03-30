@@ -361,7 +361,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   levelManager: {fileID: 248903614}
-  LevelLayoutTxt: {fileID: 4900000, guid: 1cf991a9be8715440b82235d41bbdd82, type: 3}
+  LevelLayoutTxt: {fileID: 4900000, guid: 8766aaf478e8cbf4191197c7b38bd0cb, type: 3}
   CellPrefab: {fileID: 5275000397810199690, guid: 406b5655ba3d5a8488cbec7029239d28, type: 3}
   CellSize: 1.03
   xSize: 0
