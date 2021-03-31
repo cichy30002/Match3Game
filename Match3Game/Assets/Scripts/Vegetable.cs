@@ -27,7 +27,8 @@ public class Vegetable : MonoBehaviour
 		Potato,
 		Chili,
 		Eggplant,
-		Garlic
+		Garlic,
+		none
 	}
 	public enum VegeState
 	{

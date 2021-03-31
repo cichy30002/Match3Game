@@ -35,89 +35,136 @@ public class LevelManager : MonoBehaviour
 	public List<Vector2Int[]> Find3()
 	{
 		List<Vector2Int[]> result = new List<Vector2Int[]>();
+		Vegetable.VegeType [,] allToExterminate = new Vegetable.VegeType[board.xSize, board.ySize];
 		for (int i = 0; i < board.ySize; i++)
 		{
 			for (int j = 0; j < board.xSize; j++)
 			{
 				if(gameGrid[j, i] != null)
 				{
-					if(j + 2 < board.xSize)
-					{
-						if (gameGrid[j + 1, i] != null && gameGrid[j + 2, i] != null)
-						{
-							if (gameGrid[j, i].Type == gameGrid[j + 1, i].Type && gameGrid[j, i].Type == gameGrid[j + 2, i].Type)
-							{
-								int count = 3;
-								while(j+count<board.xSize && gameGrid[j + count, i] != null && gameGrid[j, i].Type == gameGrid[j + count, i].Type)
-								{
-									count++;
-								}
-								Vector2Int[] tmp = new Vector2Int[count];
-								Vector2Int[] tmp2 = new Vector2Int[0];
-								int count2 = 0;
-								for (int x = 0; x < count; x++)
-								{
-									if (i + 2 < board.ySize)
-									{
-										if (gameGrid[j + x, i + 1] != null && gameGrid[j + x, i + 2] != null)
-										{
-											if (gameGrid[j, i].Type == gameGrid[j + x, i + 1].Type && gameGrid[j, i].Type == gameGrid[j + x, i + 2].Type)
-											{
-												Debug.Log("found!");
-												count2 = 3;
-												while (i + count2 < board.ySize && gameGrid[j + x, i + count2] != null && gameGrid[j + x, i + count2].Type == gameGrid[j + x, i + count2].Type)
-												{
-													count2++;
-												}
-												tmp2 = new Vector2Int[count2];
-												for (int y = 0; y < count2; y++)
-												{
-													tmp2[y] = new Vector2Int(j + x, i + y);
-												}
-											}
-										}
-									}
-									tmp[x] = new Vector2Int(j+x, i);
-								}
-								Vector2Int[] res = new Vector2Int[count + count2];
-								for (int x = 0; x < count+count2; x++)
-								{
-									if(x<count)
-									{
-										res[x] = tmp[x];
-									}
-									else
-									{
-										res[x] = tmp2[x - count];
-									}
-								}
-								if(count2!=0)
-								{
-									Debug.Log(count + " " + count2);
-								}
-								
-								result.Add(tmp);
-							}
-						}
-					}
-					if(i + 2 < board.ySize)
-					{
-						if (gameGrid[j, i + 1] != null && gameGrid[j, i + 2] != null)
-						{
-							if (gameGrid[j, i].Type == gameGrid[j, i + 1].Type && gameGrid[j, i].Type == gameGrid[j, i + 2].Type)
-							{
-								Vector2Int[] tmp = new Vector2Int[3];
-								tmp[0] = new Vector2Int(j, i);
-								tmp[1] = new Vector2Int(j, i + 1);
-								tmp[2] = new Vector2Int(j, i + 2);
-								result.Add(tmp);
-							}
-						}
-					}
+					allToExterminate[j, i] = gameGrid[j, i].Type;
+				}
+				else
+				{
+					allToExterminate[j, i] = Vegetable.VegeType.none;
 				}
 				
 			}
 		}
+		for (int i = 0; i < board.ySize; i++)
+		{
+			for (int j = 0; j < board.xSize; j++)
+			{
+				if(gameGrid[j, i] != null)
+				{
+					List<Vector2Int> dynamicBoi = new List<Vector2Int>();
+					if (j + 2 < board.xSize && allToExterminate[j + 1, i] == gameGrid[j, i].Type && allToExterminate[j + 2, i] == gameGrid[j, i].Type)
+					{
+						dynamicBoi.Add(new Vector2Int(j, i));
+						dynamicBoi.Add(new Vector2Int(j + 1, i));
+						dynamicBoi.Add(new Vector2Int(j + 2, i));
+						if (j + 3 < board.xSize && allToExterminate[j + 3, i] == gameGrid[j, i].Type)
+						{
+							dynamicBoi.Add(new Vector2Int(j + 3, i));
+						}
+						if (j + 4 < board.xSize && allToExterminate[j + 4, i] == gameGrid[j, i].Type)
+						{
+							dynamicBoi.Add(new Vector2Int(j + 4, i));
+						}
+						int tmp = dynamicBoi.Count;
+						for (int x = 0; x < tmp; x++)
+						{
+							if (i + 2 < board.ySize && allToExterminate[j + x, i + 1] == gameGrid[j, i].Type && allToExterminate[j + x, i + 2] == gameGrid[j, i].Type)
+							{
+								dynamicBoi.Add(new Vector2Int(j + x, i + 1));
+								dynamicBoi.Add(new Vector2Int(j + x, i + 2));
+								if (i - 1 > 0 && allToExterminate[j + x, i - 1] == gameGrid[j, i].Type)
+								{
+									dynamicBoi.Add(new Vector2Int(j + x, i - 1));
+								}
+								if (i - 2 > 0 && allToExterminate[j + x, i - 2] == gameGrid[j, i].Type)
+								{
+									dynamicBoi.Add(new Vector2Int(j + x, i - 2));
+								}
+							}
+							else if (i + 1 < board.ySize && i - 1 > 0 && allToExterminate[j + x, i + 1] == gameGrid[j, i].Type && allToExterminate[j + x, i - 1] == gameGrid[j, i].Type)
+							{
+								dynamicBoi.Add(new Vector2Int(j + x, i + 1));
+								dynamicBoi.Add(new Vector2Int(j + x, i - 1));
+								if (i - 2 > 0 && allToExterminate[j + x, i - 2] == gameGrid[j, i].Type)
+								{
+									dynamicBoi.Add(new Vector2Int(j + x, i - 2));
+								}
+							}
+							else if (i - 2 > 0 && allToExterminate[j + x, i - 1] == gameGrid[j, i].Type && allToExterminate[j + x, i - 2] == gameGrid[j, i].Type)
+							{
+								dynamicBoi.Add(new Vector2Int(j + x, i - 1));
+								dynamicBoi.Add(new Vector2Int(j + x, i - 2));
+							}
+						}
+						Vector2Int[] newRes = new Vector2Int[dynamicBoi.Count];
+						for (int x = 0; x < dynamicBoi.Count; x++)
+						{
+							newRes[x] = dynamicBoi[x];
+						}
+						result.Add(newRes);
+					}
+					else if (i + 2 < board.ySize && allToExterminate[j, i + 1] == gameGrid[j, i].Type && allToExterminate[j , i + 2] == gameGrid[j, i].Type)
+					{
+						dynamicBoi.Add(new Vector2Int(j, i));
+						dynamicBoi.Add(new Vector2Int(j, i + 1));
+						dynamicBoi.Add(new Vector2Int(j, i + 2));
+						if (i + 3 < board.ySize && allToExterminate[j, i + 3] == gameGrid[j, i].Type)
+						{
+							dynamicBoi.Add(new Vector2Int(j, i + 3));
+						}
+						if (i + 4 < board.ySize && allToExterminate[j, i + 4] == gameGrid[j, i].Type)
+						{
+							dynamicBoi.Add(new Vector2Int(j, i + 4));
+						}
+						int tmp = dynamicBoi.Count;
+						for (int x = 0; x < tmp; x++)
+						{
+							if (j + 2 < board.xSize && allToExterminate[j + 1, i + x] == gameGrid[j, i].Type && allToExterminate[j + 2, i + x] == gameGrid[j, i].Type)
+							{
+								dynamicBoi.Add(new Vector2Int(j + 1, i + x));
+								dynamicBoi.Add(new Vector2Int(j + 2, i + x));
+								if (j - 1 > 0 && allToExterminate[j - 1, i + x] == gameGrid[j, i].Type)
+								{
+									dynamicBoi.Add(new Vector2Int(j - 1, i + x));
+								}
+								if (j - 2 > 0 && allToExterminate[j - 2, i + x] == gameGrid[j, i].Type)
+								{
+									dynamicBoi.Add(new Vector2Int(j - 2, i + x));
+								}
+							}
+							else if (j + 1 < board.xSize && j - 1 > 0 && allToExterminate[j + 1, i + x] == gameGrid[j, i].Type && allToExterminate[j - 1, i + x] == gameGrid[j, i].Type)
+							{
+								dynamicBoi.Add(new Vector2Int(j + 1, i + x));
+								dynamicBoi.Add(new Vector2Int(j - 1, i + x));
+								if (j - 2 > 0 && allToExterminate[j - 2, i + x] == gameGrid[j, i].Type)
+								{
+									dynamicBoi.Add(new Vector2Int(j - 2, i + x));
+								}
+							}
+							else if (j - 2 > 0 && allToExterminate[j - 1, i + x] == gameGrid[j, i].Type && allToExterminate[j - 2, i + x] == gameGrid[j, i].Type)
+							{
+								dynamicBoi.Add(new Vector2Int(j - 1, i + x));
+								dynamicBoi.Add(new Vector2Int(j - 2, i + x));
+							}
+						}
+						Vector2Int[] newRes = new Vector2Int[dynamicBoi.Count];
+						for (int x = 0; x < dynamicBoi.Count; x++)
+						{
+							allToExterminate[dynamicBoi[x].x, dynamicBoi[x].y] = 0;
+							newRes[x] = dynamicBoi[x];
+						}
+						result.Add(newRes);
+					}
+				}
+			}
+		}
+
 		return result;
 	}
 	public void FirstVegeCheck()
@@ -203,6 +250,10 @@ public class LevelManager : MonoBehaviour
 		if (triplets.Count == 0) return;
 		foreach(Vector2Int[] triplet in triplets)
 		{
+			if(triplet.Length>3)
+			{
+				Debug.Log(triplet.Length);
+			}
 			foreach(Vector2Int vege in triplet)
 			{
 				Destroy(vegeTransforms[vege.x, vege.y].gameObject);
