@@ -192,7 +192,7 @@ public class LevelManager : MonoBehaviour
 		{
 			return;
 		}
-		readyToMove = false;
+		
 		if (a.x < 0 || a.x >= board.xSize || a.y < 0 || a.y >= board.ySize)
 		{
 			Debug.LogError("Invalid move!");
@@ -203,6 +203,17 @@ public class LevelManager : MonoBehaviour
 			Debug.LogError("Invalid move!");
 			return;
 		}
+		if (board.LevelCellValue(a.x, a.y) == "disabled")
+		{
+			Debug.Log(board.LevelCellValue(a.x, a.y));
+			return;
+		}
+		if (board.LevelCellValue(b.x, b.y) == "disabled")
+		{
+			Debug.Log(board.LevelCellValue(b.x, b.y));
+			return;
+		}
+		readyToMove = false;
 		Vegetable temp = gameGrid[a.x, a.y];
 		gameGrid[a.x, a.y] = gameGrid[b.x, b.y];
 		gameGrid[b.x, b.y] = temp;
@@ -245,12 +256,27 @@ public class LevelManager : MonoBehaviour
 			PerformTriplets(Find3());
 		}
 	}
+	void DrawLine(Vector2Int[] triplet)
+	{
+		int minx = 10000, miny = 100000, maxx = 0, maxy = 0;
+
+		foreach (Vector2Int vege in triplet)
+		{
+			if (vege.x < minx) minx = vege.x;
+			if (vege.y < miny) miny = vege.y;
+			if (vege.x > maxx) maxx = vege.x;
+			if (vege.y > maxy) maxy = vege.y;
+		}
+		Debug.DrawLine(vegeTransforms[minx, miny].position, vegeTransforms[maxx, maxy].position, Color.blue, 1f);
+		
+	}
 	void PerformTriplets(List<Vector2Int[]> triplets)
 	{
 		if (triplets.Count == 0) return;
 		foreach(Vector2Int[] triplet in triplets)
 		{
-			if(triplet.Length>3)
+			DrawLine(triplet);
+			if (triplet.Length>3)
 			{
 				Debug.Log(triplet.Length);
 			}
