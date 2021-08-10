@@ -7,6 +7,7 @@ public class LevelManager : MonoBehaviour
 	public Board board;
 	public GameObject VegePrefab;
 	public Transform VegetablesParent;
+	public UIManager UIManager;
 
 	public float swapingTime = 0.2f;
 	public float fallingTime = 0.5f;
@@ -14,6 +15,13 @@ public class LevelManager : MonoBehaviour
 	private Vegetable[,] gameGrid;
 	private Transform[,] vegeTransforms;
 	private bool readyToMove = true;
+
+	private int points;
+	private void Start()
+	{
+		points = 0;
+		UIManager.UpdatePoints(points);
+	}
 	public void Fill()
 	{
 		gameGrid = new Vegetable[board.xSize, board.ySize];
@@ -66,10 +74,11 @@ public class LevelManager : MonoBehaviour
 						if (j + 3 < board.xSize && allToExterminate[j + 3, i] == gameGrid[j, i].Type)
 						{
 							dynamicBoi.Add(new Vector2Int(j + 3, i));
-						}
-						if (j + 4 < board.xSize && allToExterminate[j + 4, i] == gameGrid[j, i].Type)
-						{
-							dynamicBoi.Add(new Vector2Int(j + 4, i));
+
+							if (j + 4 < board.xSize && allToExterminate[j + 4, i] == gameGrid[j, i].Type)
+							{
+								dynamicBoi.Add(new Vector2Int(j + 4, i));
+							}
 						}
 						int tmp = dynamicBoi.Count;
 						for (int x = 0; x < tmp; x++)
@@ -105,6 +114,7 @@ public class LevelManager : MonoBehaviour
 						Vector2Int[] newRes = new Vector2Int[dynamicBoi.Count];
 						for (int x = 0; x < dynamicBoi.Count; x++)
 						{
+							allToExterminate[dynamicBoi[x].x, dynamicBoi[x].y] = 0;
 							newRes[x] = dynamicBoi[x];
 						}
 						result.Add(newRes);
@@ -117,10 +127,11 @@ public class LevelManager : MonoBehaviour
 						if (i + 3 < board.ySize && allToExterminate[j, i + 3] == gameGrid[j, i].Type)
 						{
 							dynamicBoi.Add(new Vector2Int(j, i + 3));
-						}
-						if (i + 4 < board.ySize && allToExterminate[j, i + 4] == gameGrid[j, i].Type)
-						{
-							dynamicBoi.Add(new Vector2Int(j, i + 4));
+
+							if (i + 4 < board.ySize && allToExterminate[j, i + 4] == gameGrid[j, i].Type)
+							{
+								dynamicBoi.Add(new Vector2Int(j, i + 4));
+							}
 						}
 						int tmp = dynamicBoi.Count;
 						for (int x = 0; x < tmp; x++)
@@ -159,6 +170,7 @@ public class LevelManager : MonoBehaviour
 							allToExterminate[dynamicBoi[x].x, dynamicBoi[x].y] = 0;
 							newRes[x] = dynamicBoi[x];
 						}
+						
 						result.Add(newRes);
 					}
 				}
@@ -252,7 +264,7 @@ public class LevelManager : MonoBehaviour
 		}
 		else
 		{
-			readyToMove = true;
+			
 			PerformTriplets(Find3());
 		}
 	}
@@ -272,19 +284,27 @@ public class LevelManager : MonoBehaviour
 	}
 	void PerformTriplets(List<Vector2Int[]> triplets)
 	{
-		if (triplets.Count == 0) return;
-		foreach(Vector2Int[] triplet in triplets)
+		if (triplets.Count == 0)
+		{
+			readyToMove = true;
+			return;
+		}
+		
+		foreach (Vector2Int[] triplet in triplets)
 		{
 			DrawLine(triplet);
 			if (triplet.Length>3)
 			{
-				Debug.Log(triplet.Length);
+				Debug.Log(debug(triplet) + " " +  triplet.Length.ToString());
 			}
-			foreach(Vector2Int vege in triplet)
+			//effects!
+			AddPoints(triplet);
+			foreach (Vector2Int vege in triplet)
 			{
 				Destroy(vegeTransforms[vege.x, vege.y].gameObject);
 			}
 		}
+		//Debug.Log("new");
 		StartCoroutine(ReFill(triplets));
 		
 	}
@@ -299,7 +319,6 @@ public class LevelManager : MonoBehaviour
 			{
 				newVegeInstructions[vege.x] += 1;
 				refillInstructions[vege.x, vege.y] = -1;
-				//EMPTY CELLS!!!!
 			}
 		}
 		for (int i = 0; i < board.ySize; i++)
@@ -337,18 +356,6 @@ public class LevelManager : MonoBehaviour
 				}
 			}
 		}
-		/*
-		string tmp = "";
-		for (int i = 0; i < board.ySize; i++)
-		{
-			for (int j = 0; j < board.xSize; j++)
-			{
-				tmp += refillInstructions[j, i];
-			}
-			tmp += "\n";
-		}
-		Debug.Log(tmp);
-		*/
 		int[] counts = new int[board.xSize];
 		for (int i = 0; i < board.ySize; i++)
 		{
@@ -408,5 +415,41 @@ public class LevelManager : MonoBehaviour
 			yield return null;
 		}
 
+	}
+	private string debug(Vector2Int[] tab)
+	{
+		string ret = "";
+		foreach(Vector2Int i in tab)
+		{
+			ret += " (" + i.x + "," + i.y + ") ";
+		}
+		return ret;
+	}
+	private void AddPoints(Vector2Int[] triplet)
+	{
+		switch(triplet.Length)
+		{
+			case 3:
+				Debug.Log("100 points!");
+				ChangePoints(100);
+				break;
+			case 4:
+				Debug.Log("300 points!");
+				ChangePoints(300);
+				break;
+			case 5:
+				Debug.Log("1000 points! wow");
+				ChangePoints(1000);
+				break;
+			default:
+				Debug.Log("a lot of points");
+				ChangePoints(1);
+				break;
+		}
+	}
+	private void ChangePoints(int x)
+	{
+		points += x;
+		UIManager.UpdatePoints(points);
 	}
 }		
