@@ -9,12 +9,7 @@ public class Vegetable : MonoBehaviour
 	public int Points = 1;
 	public VegeType Type;
 	public VegeState State = VegeState.Default;
-	public Sprite Broccoli;
-	public Sprite Carrot;
-	public Sprite Potato;
-	public Sprite Chili;
-	public Sprite Eggplant;
-	public Sprite Garlic;
+	
 	private void Start()
 	{
 		SetVegeType( RandomVegeType());
@@ -44,26 +39,7 @@ public class Vegetable : MonoBehaviour
 	public void SetVegeType(VegeType type)
 	{
 		Type = type;
-		switch (Type)
-		{
-			case VegeType.Broccoli:
-				spriteRenderer.sprite = Broccoli;
-				break;
-			case VegeType.Carrot:
-				spriteRenderer.sprite = Carrot;
-				break;
-			case VegeType.Chili:
-				spriteRenderer.sprite = Chili;
-				break;
-			case VegeType.Eggplant:
-				spriteRenderer.sprite = Eggplant;
-				break;
-			case VegeType.Garlic:
-				spriteRenderer.sprite = Garlic;
-				break;
-			case VegeType.Potato:
-				spriteRenderer.sprite = Potato;
-				break;
-		}
+		spriteRenderer.sprite = VegeSprites.FindVegeSprite(type);
 	}
+	
 }

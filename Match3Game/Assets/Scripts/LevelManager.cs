@@ -8,6 +8,9 @@ public class LevelManager : MonoBehaviour
 	public GameObject VegePrefab;
 	public Transform VegetablesParent;
 	public UIManager UIManager;
+	public ParticleSystem ParticleMatch3;
+	public ParticleSystem ParticleMatch4;
+	public ParticleSystem ParticleMatch5;
 
 	public float swapingTime = 0.2f;
 	public float fallingTime = 0.5f;
@@ -240,6 +243,7 @@ public class LevelManager : MonoBehaviour
 		}
 		else
 		{
+			board.ProgressMoves();
 			StartCoroutine(MoveLerp(a, b, false));
 		}
 	}
@@ -301,10 +305,9 @@ public class LevelManager : MonoBehaviour
 			AddPoints(triplet);
 			foreach (Vector2Int vege in triplet)
 			{
-				Destroy(vegeTransforms[vege.x, vege.y].gameObject);
+				DestroyVege(vegeTransforms[vege.x, vege.y].gameObject, vege, triplet.Length);
 			}
 		}
-		//Debug.Log("new");
 		StartCoroutine(ReFill(triplets));
 		
 	}
@@ -427,22 +430,34 @@ public class LevelManager : MonoBehaviour
 	}
 	private void AddPoints(Vector2Int[] triplet)
 	{
+		foreach(Vector2Int vege in triplet)
+		{
+			if (board.Mission.ContainsKey(gameGrid[vege.x, vege.y].Type))
+			{
+				board.ProgressMission(gameGrid[vege.x, vege.y].Type);
+				UIManager.UpdateTask(board.Mission);
+			}
+			if (board.MissionComplete())
+			{
+				Debug.Log("you won");
+			}
+		}
 		switch(triplet.Length)
 		{
 			case 3:
-				Debug.Log("100 points!");
+				//Debug.Log("100 points!");
 				ChangePoints(100);
 				break;
 			case 4:
-				Debug.Log("300 points!");
+				//Debug.Log("300 points!");
 				ChangePoints(300);
 				break;
 			case 5:
-				Debug.Log("1000 points! wow");
+				//Debug.Log("1000 points! wow");
 				ChangePoints(1000);
 				break;
 			default:
-				Debug.Log("a lot of points");
+				//Debug.Log("a lot of points");
 				ChangePoints(1);
 				break;
 		}
@@ -452,4 +467,25 @@ public class LevelManager : MonoBehaviour
 		points += x;
 		UIManager.UpdatePoints(points);
 	}
+	private void DestroyVege(GameObject vegeGO, Vector2Int vege, int len)
+	{
+		switch (len)
+		{
+			case 3:
+				Instantiate(ParticleMatch3, vegeGO.transform.position, vegeGO.transform.rotation);
+				break;
+			case 4:
+				Instantiate(ParticleMatch4, vegeGO.transform.position, vegeGO.transform.rotation);
+				break;
+			case 5:
+				Instantiate(ParticleMatch5, vegeGO.transform.position, vegeGO.transform.rotation);
+				break;
+			default:
+				Instantiate(ParticleMatch3, vegeGO.transform.position, vegeGO.transform.rotation);
+				break;
+		}
+		
+		Destroy(vegeTransforms[vege.x, vege.y].gameObject);
+	}
+
 }		

@@ -1,0 +1,5 @@
+Moves 12
+Chili 30
+Broccoli 20
+Potato 10
+Eggplant 70

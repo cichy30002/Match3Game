@@ -1,11 +1,14 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
+using System.Linq;
 
 public class Board : MonoBehaviour
 {
 	public LevelManager levelManager;
 	public TextAsset LevelLayoutTxt;
+	public TextAsset MissionTxt;
 	public GameObject CellPrefab;
 	public float CellSize = 1f;
 	[HideInInspector]
@@ -23,6 +26,8 @@ public class Board : MonoBehaviour
 		{ 0, "disabled" },
 		{ 2, "selected" }
 	};
+	public Dictionary<Vegetable.VegeType, int[]> Mission;
+	public int[] Moves;
 
 	private int[,] levelGrid;
 	private Cell[,] cellArr;
@@ -31,6 +36,8 @@ public class Board : MonoBehaviour
 	void Start()
 	{
 		ProcessTextLayout(LevelLayoutTxt.text);
+		ProcessTextMission(MissionTxt.text);
+		levelManager.UIManager.InitTasks(Mission);
 		cordGrid = new Vector2[xSize, ySize];
 		CalculateCordGrid();
 		DrawLevelLayout();
@@ -80,17 +87,7 @@ public class Board : MonoBehaviour
 
 			}
 		}
-		/*
-		for (int i = 0; i < ySize; i++)
-		{
-			string tmp = "";
-			for (int j = 0; j < xSize; j++)
-			{
-				tmp += levelGrid[j, i];
-			}
-			Debug.Log(tmp);
-		}
-		*/
+		
 
 	}
 	void CalculateCordGrid()
@@ -108,17 +105,7 @@ public class Board : MonoBehaviour
 			}
 			y += CellSize;
 		}
-		/*
-		for (int i = 0; i < ySize; i++)
-		{
-			string tmp = "";
-			for (int j = 0; j < xSize; j++)
-			{
-				tmp += cordGrid[j, i];
-			}
-			Debug.Log(tmp);
-		}
-		*/
+		
 	}
 	void DrawLevelLayout()
 	{
@@ -186,5 +173,57 @@ public class Board : MonoBehaviour
 	{
 		if (levelGrid[x, y] != 0) return true;
 		return false;
+	}
+	private void ProcessTextMission (string text)
+	{
+		Mission = new Dictionary<Vegetable.VegeType, int[]>();
+		string [] pairs = text.Split('\n');
+		string moves = pairs[0];
+		pairs = pairs.Skip(1).ToArray();
+		string[] movesTab = moves.Split(' ');
+		if(movesTab[0] != "Moves")
+		{
+			Debug.LogError("wrong Mission format - moves");
+		}
+		else
+		{
+			Moves = new int[2];
+			Moves[0] = 0;
+			Moves[1] = Int32.Parse( movesTab[1]);
+		}
+		levelManager.UIManager.InitMoves(Moves[1]);
+		foreach (string pair in pairs)
+		{
+			string[] tmp = pair.Split(' ');
+			Mission[(Vegetable.VegeType) Enum.Parse(typeof( Vegetable.VegeType), tmp[0])] = new int[] { 0, Int32.Parse(tmp[1])};
+		}
+	}
+	public void ProgressMission(Vegetable.VegeType type)
+	{
+		if(Mission[type][1] > Mission[type][0])
+		{
+			Mission[type][0]++;
+		}
+		
+	}
+	public bool MissionComplete()
+	{
+		foreach(KeyValuePair<Vegetable.VegeType, int[]> task in Mission)
+		{
+			if(task.Value[0]<task.Value[1])
+			{
+				return false;
+			}
+		}
+		return true;
+	}
+	public void ProgressMoves()
+	{
+		Moves[0]++;
+		if(Moves[0] == Moves[1])
+		{
+			Debug.Log("you lost");
+		}
+		levelManager.UIManager.UpdateMoves(Moves[0], Moves[1]);
 	}
 }
