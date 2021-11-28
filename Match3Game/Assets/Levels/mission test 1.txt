@@ -1,0 +1,5 @@
+Moves 15
+Chili 3
+Broccoli 20
+Potato 10
+Eggplant 7

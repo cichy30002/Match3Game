@@ -5,11 +5,14 @@ using TMPro;
 using UnityEngine.UI;
 public class UIManager : MonoBehaviour
 {
+	public TMP_Text LevelText;
 	public TMP_Text PointsText;
 	public RectTransform PointsRT;
 	public GameObject TasksParent;
 	public GameObject TaskPrefab;
 	public TMP_Text MovesText;
+	public GameObject WinPanel;
+	public GameObject LosePanel;
 
 	public void UpdatePoints(int points)
 	{
@@ -58,5 +61,24 @@ public class UIManager : MonoBehaviour
 	public void UpdateMoves(int movesDone, int numberOfMoves)
 	{
 		MovesText.text = (numberOfMoves - movesDone).ToString();
+	}
+	public void EndGame()
+	{
+		foreach(Transform trans in TasksParent.transform)
+		{
+			Destroy(trans.gameObject);
+		}
+	}
+	public void WinGame()
+	{
+		WinPanel.SetActive(true);
+	}
+	public void LoseGame()
+	{
+		LosePanel.SetActive(true);
+	}
+	public void SetLevelText(int level)
+	{
+		LevelText.text = "Level " + level.ToString();
 	}
 }

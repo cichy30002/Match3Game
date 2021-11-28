@@ -1,0 +1,4 @@
+Moves 12
+Chili 13
+Potato 10
+Eggplant 7

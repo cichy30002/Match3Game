@@ -25,7 +25,15 @@ public class GameManager : MonoBehaviour
 	}
 	void Update()
     {
-		ProcessMouseInput();
+		if(levelManager.isLevelActive)
+		{
+			ProcessMouseInput();
+		}
+		else
+		{
+			lastClickedCell = Vector2Int.zero;
+		}
+		
     }
 	void ProcessMouseInput()
 	{

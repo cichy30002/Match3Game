@@ -33,8 +33,9 @@ public class Board : MonoBehaviour
 	private Cell[,] cellArr;
 
 	// Start is called before the first frame update
-	void Start()
+	public void StartGame()
 	{
+		levelManager.StartGame();
 		ProcessTextLayout(LevelLayoutTxt.text);
 		ProcessTextMission(MissionTxt.text);
 		levelManager.UIManager.InitTasks(Mission);
@@ -150,7 +151,7 @@ public class Board : MonoBehaviour
 	{
 		if(x<0 || x>=xSize || y<0 || y>=ySize)
 		{
-			Debug.LogError("You want to select cell that does not exist!");
+			//Debug.LogError("You want to select cell that does not exist!");
 			return;
 		}
 		if(levelGrid[x,y]==0)
@@ -220,10 +221,18 @@ public class Board : MonoBehaviour
 	public void ProgressMoves()
 	{
 		Moves[0]++;
-		if(Moves[0] == Moves[1])
+		if(Moves[0] == Moves[1] && !MissionComplete())
 		{
-			Debug.Log("you lost");
+			StartCoroutine( levelManager.LoseGame());
 		}
 		levelManager.UIManager.UpdateMoves(Moves[0], Moves[1]);
+	}
+	public void EndGame()
+	{
+		foreach(Cell cell in cellArr)
+		{
+			Destroy(cell.gameObject);
+		}
+		levelManager.EndGame();
 	}
 }

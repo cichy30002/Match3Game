@@ -20,8 +20,10 @@ public class LevelManager : MonoBehaviour
 	private bool readyToMove = true;
 
 	private int points;
+	[HideInInspector]public bool isLevelActive = true;
 	private void Start()
 	{
+		isLevelActive = true;
 		points = 0;
 		UIManager.UpdatePoints(points);
 	}
@@ -210,22 +212,22 @@ public class LevelManager : MonoBehaviour
 		
 		if (a.x < 0 || a.x >= board.xSize || a.y < 0 || a.y >= board.ySize)
 		{
-			Debug.LogError("Invalid move!");
+			//Debug.LogError("Invalid move!");
 			return;
 		}
 		if (b.x < 0 || b.x >= board.xSize || b.y < 0 || b.y >= board.ySize)
 		{
-			Debug.LogError("Invalid move!");
+			//Debug.LogError("Invalid move!");
 			return;
 		}
 		if (board.LevelCellValue(a.x, a.y) == "disabled")
 		{
-			Debug.Log(board.LevelCellValue(a.x, a.y));
+			//Debug.Log(board.LevelCellValue(a.x, a.y));
 			return;
 		}
 		if (board.LevelCellValue(b.x, b.y) == "disabled")
 		{
-			Debug.Log(board.LevelCellValue(b.x, b.y));
+			//Debug.Log(board.LevelCellValue(b.x, b.y));
 			return;
 		}
 		readyToMove = false;
@@ -236,18 +238,18 @@ public class LevelManager : MonoBehaviour
 		List<Vector2Int[]> triplets = Find3();
 		if (triplets.Count == 0)
 		{
-			StartCoroutine(MoveLerp(a, b, true));
+			StartCoroutine(MoveLerp(a, b, 0));
 			temp = gameGrid[a.x, a.y];
 			gameGrid[a.x, a.y] = gameGrid[b.x, b.y];
 			gameGrid[b.x, b.y] = temp;
 		}
 		else
 		{
-			board.ProgressMoves();
-			StartCoroutine(MoveLerp(a, b, false));
+			
+			StartCoroutine(MoveLerp(a, b, 1));
 		}
 	}
-	IEnumerator MoveLerp(Vector2Int a, Vector2Int b, bool back)
+	IEnumerator MoveLerp(Vector2Int a, Vector2Int b, int back)
 	{
 		Vector2 startPosA = vegeTransforms[a.x, a.y].position;
 		Vector2 startPosB = vegeTransforms[b.x, b.y].position;
@@ -261,16 +263,22 @@ public class LevelManager : MonoBehaviour
 		Transform tmp = vegeTransforms[a.x, a.y];
 		vegeTransforms[a.x, a.y] = vegeTransforms[b.x, b.y];
 		vegeTransforms[b.x, b.y] = tmp;
-		if(back)
+		if(back == 0)
 		{
 			yield return new WaitForSeconds(0.05f);
-			StartCoroutine(MoveLerp(a, b, false));
+			StartCoroutine(MoveLerp(a, b, 2));
+		}
+		else if(back == 1)
+		{
+			board.ProgressMoves();
+			PerformTriplets(Find3());
 		}
 		else
 		{
-			
 			PerformTriplets(Find3());
 		}
+		
+		
 	}
 	void DrawLine(Vector2Int[] triplet)
 	{
@@ -283,7 +291,7 @@ public class LevelManager : MonoBehaviour
 			if (vege.x > maxx) maxx = vege.x;
 			if (vege.y > maxy) maxy = vege.y;
 		}
-		Debug.DrawLine(vegeTransforms[minx, miny].position, vegeTransforms[maxx, maxy].position, Color.blue, 1f);
+		//Debug.DrawLine(vegeTransforms[minx, miny].position, vegeTransforms[maxx, maxy].position, Color.blue, 1f);
 		
 	}
 	void PerformTriplets(List<Vector2Int[]> triplets)
@@ -291,6 +299,7 @@ public class LevelManager : MonoBehaviour
 		if (triplets.Count == 0)
 		{
 			readyToMove = true;
+			
 			return;
 		}
 		
@@ -439,7 +448,7 @@ public class LevelManager : MonoBehaviour
 			}
 			if (board.MissionComplete())
 			{
-				Debug.Log("you won");
+				StartCoroutine( WinGame());
 			}
 		}
 		switch(triplet.Length)
@@ -487,5 +496,50 @@ public class LevelManager : MonoBehaviour
 		
 		Destroy(vegeTransforms[vege.x, vege.y].gameObject);
 	}
-
+	public void EndGame()
+	{
+		isLevelActive = false;
+		foreach(Vegetable vege in gameGrid)
+		{
+			if(vege != null)
+			{
+				Destroy(vege.gameObject);
+			}
+		}
+		UIManager.EndGame();
+		
+	}
+	public void StartGame()
+	{
+		points = 0;
+		UIManager.UpdatePoints(points);
+		StartCoroutine(startingWait());
+	}
+	IEnumerator startingWait()
+	{
+		yield return new WaitForSeconds(0.2f);
+		isLevelActive = true;
+	}
+	public IEnumerator WinGame()
+	{
+		while(!readyToMove)
+		{
+			yield return null;
+		}
+		UIManager.WinGame();
+		board.EndGame();
+	}
+	public IEnumerator LoseGame()
+	{
+		while (!readyToMove)
+		{
+			yield return null;
+		}
+		if(board.MissionComplete())
+		{
+			yield break;
+		}
+		UIManager.LoseGame();
+		board.EndGame();
+	}
 }		
