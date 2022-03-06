@@ -6,8 +6,10 @@ using UnityEngine;
 public class SaveData
 {
 	public int levelNumber = 1;
-	public SaveData(int level)
+	public int unlockedLevel = 1;
+	public SaveData(int level, int unlocked)
 	{
 		levelNumber = level;
+		unlockedLevel = Mathf.Max(1,unlocked);
 	}
 }

@@ -6,26 +6,34 @@ using UnityEngine.SceneManagement;
 public class TrueLevelManager : MonoBehaviour
 {
 	public Board board;
-	public int levelNumber = 1;
+	public int currentLevelNumber = 1;
+	public int unlockedLevelNumber = 1;
 
 	private void Start()
 	{
-		levelNumber = Save.LoadLevel().levelNumber;
+		currentLevelNumber = Save.LoadLevel().levelNumber;
+		unlockedLevelNumber = Save.LoadLevel().unlockedLevel;
 		LoadLevel();
 	}
 
 	public void LoadLevel()
 	{
-		board.LevelLayoutTxt = Resources.Load<TextAsset>("Levels/level" + levelNumber.ToString());
-		board.MissionTxt = Resources.Load<TextAsset>("Levels/mission" + levelNumber.ToString());
+		board.LevelLayoutTxt = Resources.Load<TextAsset>("Levels/level" + currentLevelNumber.ToString());
+		board.MissionTxt = Resources.Load<TextAsset>("Levels/mission" + currentLevelNumber.ToString());
 		board.StartGame();
-		board.levelManager.UIManager.SetLevelText(levelNumber);
+		board.levelManager.UIManager.SetLevelText(currentLevelNumber);
 	}
 	public void NextLevel()
 	{
-		levelNumber++;
-		Save.SaveLevel(levelNumber);
+		currentLevelNumber++;
+		unlockedLevelNumber = Mathf.Max(currentLevelNumber, unlockedLevelNumber + 1);
+		Save.SaveLevel(currentLevelNumber, unlockedLevelNumber);
 		LoadLevel();
+	}
+	public void UnlockLevel()
+	{
+		unlockedLevelNumber++;
+		Save.SaveLevel(currentLevelNumber, unlockedLevelNumber);
 	}
 	public void LoadMenu()
 	{

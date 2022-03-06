@@ -5,6 +5,7 @@ using UnityEngine;
 public class LevelManager : MonoBehaviour
 {
 	public Board board;
+	public TrueLevelManager trueLevelManager;
 	public GameObject VegePrefab;
 	public Transform VegetablesParent;
 	public UIManager UIManager;
@@ -212,22 +213,18 @@ public class LevelManager : MonoBehaviour
 		
 		if (a.x < 0 || a.x >= board.xSize || a.y < 0 || a.y >= board.ySize)
 		{
-			//Debug.LogError("Invalid move!");
 			return;
 		}
 		if (b.x < 0 || b.x >= board.xSize || b.y < 0 || b.y >= board.ySize)
 		{
-			//Debug.LogError("Invalid move!");
 			return;
 		}
 		if (board.LevelCellValue(a.x, a.y) == "disabled")
 		{
-			//Debug.Log(board.LevelCellValue(a.x, a.y));
 			return;
 		}
 		if (board.LevelCellValue(b.x, b.y) == "disabled")
 		{
-			//Debug.Log(board.LevelCellValue(b.x, b.y));
 			return;
 		}
 		readyToMove = false;
@@ -245,7 +242,6 @@ public class LevelManager : MonoBehaviour
 		}
 		else
 		{
-			
 			StartCoroutine(MoveLerp(a, b, 1));
 		}
 	}
@@ -271,11 +267,11 @@ public class LevelManager : MonoBehaviour
 		else if(back == 1)
 		{
 			board.ProgressMoves();
-			PerformTriplets(Find3());
+			PerformTriplets();
 		}
 		else
 		{
-			PerformTriplets(Find3());
+			PerformTriplets();
 		}
 		
 		
@@ -291,15 +287,22 @@ public class LevelManager : MonoBehaviour
 			if (vege.x > maxx) maxx = vege.x;
 			if (vege.y > maxy) maxy = vege.y;
 		}
-		//Debug.DrawLine(vegeTransforms[minx, miny].position, vegeTransforms[maxx, maxy].position, Color.blue, 1f);
 		
 	}
-	void PerformTriplets(List<Vector2Int[]> triplets)
+	void PerformTriplets()
 	{
+		List<Vector2Int[]> triplets = Find3();
 		if (triplets.Count == 0)
 		{
-			readyToMove = true;
-			
+			if(AnyMovePossible())
+			{
+				readyToMove = true;
+			}
+			else
+			{
+				ClearBoard();
+				Invoke("PerformTriplets",0.7f);
+			}
 			return;
 		}
 		
@@ -310,7 +313,6 @@ public class LevelManager : MonoBehaviour
 			{
 				Debug.Log(debug(triplet) + " " +  triplet.Length.ToString());
 			}
-			//effects!
 			AddPoints(triplet);
 			foreach (Vector2Int vege in triplet)
 			{
@@ -324,12 +326,10 @@ public class LevelManager : MonoBehaviour
 	{
 		int[,] refillInstructions = new int[board.xSize, board.ySize];
 		int[,] refillCheck = new int[board.xSize, board.ySize];
-		int[] newVegeInstructions = new int[board.xSize];
 		foreach (Vector2Int[] triplet in triplets)
 		{
 			foreach (Vector2Int vege in triplet)
 			{
-				newVegeInstructions[vege.x] += 1;
 				refillInstructions[vege.x, vege.y] = -1;
 			}
 		}
@@ -396,7 +396,7 @@ public class LevelManager : MonoBehaviour
 		}
 		yield return StartCoroutine(FillLerp(refillInstructions));
 		yield return new WaitForSeconds(0.1f);
-		PerformTriplets(Find3());
+		PerformTriplets();
 	}
 	IEnumerator FillLerp(int[,] refillInstr)
 	{
@@ -526,7 +526,8 @@ public class LevelManager : MonoBehaviour
 		{
 			yield return null;
 		}
-		UIManager.WinGame();
+		UIManager.WinGame(points);
+		trueLevelManager.UnlockLevel();
 		board.EndGame();
 	}
 	public IEnumerator LoseGame()
@@ -541,5 +542,193 @@ public class LevelManager : MonoBehaviour
 		}
 		UIManager.LoseGame();
 		board.EndGame();
+	}
+	public void ClearBoard()
+	{
+		foreach(Transform vegeTransform in vegeTransforms)
+		{
+			if(vegeTransform != null)
+			{
+				Destroy(vegeTransform.gameObject);
+			}
+		}
+		StartCoroutine(FillWholeBoard());
+		Invoke("FirstVegeCheck", 0.5f);
+	}
+	public IEnumerator FillWholeBoard()
+	{
+		yield return new WaitForSeconds(0.1f);
+		int[,] refillInstructions = new int[board.xSize, board.ySize];
+		for (int i = 0; i < board.ySize; i++)
+		{
+			for (int j = 0; j < board.xSize; j++)
+			{
+				if (!board.isCellEnabled(j, i))
+				{
+					refillInstructions[j, i] = -2;
+				}
+				else
+				{
+					refillInstructions[j, i] = -1;
+				}
+			}
+		}
+		for (int i = 0; i < board.ySize; i++)
+		{
+			for (int j = 0; j < board.xSize; j++)
+			{
+				if (refillInstructions[j, i] == -1)
+				{
+					for (int y = i + 1; y <= board.ySize; y++)
+					{
+						if (y == board.ySize)
+						{
+							refillInstructions[j, i] = y - i;
+							break;
+						}
+						if (refillInstructions[j, y] == 0)
+						{
+							refillInstructions[j, y] = -1;
+							refillInstructions[j, i] = y - i;
+							break;
+						}
+					}
+					if (!board.isCellEnabled(j, i))
+						refillInstructions[j, i] = 0;
+				}
+			}
+		}
+		int[] counts = new int[board.xSize];
+		for (int i = 0; i < board.ySize; i++)
+		{
+			for (int j = 0; j < board.xSize; j++)
+			{
+				if (refillInstructions[j, i] > 0 && board.isCellEnabled(j, i))
+				{
+					if (i + refillInstructions[j, i] < board.ySize)
+					{
+						gameGrid[j, i] = gameGrid[j, i + refillInstructions[j, i]];
+						vegeTransforms[j, i] = vegeTransforms[j, i + refillInstructions[j, i]];
+					}
+					else
+					{
+						Vector2 newPos = new Vector2(board.cordGrid[j, board.ySize - 1].x, board.cordGrid[j, board.ySize - 1].y + (counts[j] + 1) * board.CellSize);
+						GameObject newInstance = Instantiate(VegePrefab, newPos, Quaternion.identity, VegetablesParent);
+						gameGrid[j, i] = newInstance.GetComponent<Vegetable>();
+						vegeTransforms[j, i] = newInstance.transform;
+						counts[j]++;
+					}
+				}
+			}
+		}
+		yield return StartCoroutine(FillLerp(refillInstructions));
+	}
+	public bool AnyMovePossible()
+	{
+		Vegetable[,] tmpGameBoard = (Vegetable [,]) gameGrid.Clone();
+		for (int i = 0; i < board.ySize; i++)
+		{
+			for (int j = 0; j < board.xSize; j++)
+			{
+				if(i>0 && board.isCellEnabled(j,i-1))
+				{
+					Vegetable tmp = tmpGameBoard[j, i];
+					tmpGameBoard[j, i] = tmpGameBoard[j, i - 1];
+					tmpGameBoard[j, i - 1] = tmp;
+					if (anyMoveFromPosition(tmpGameBoard, j, i))
+					{
+						return true;
+					}
+					tmp = tmpGameBoard[j, i];
+					tmpGameBoard[j, i] = tmpGameBoard[j, i - 1];
+					tmpGameBoard[j, i - 1] = tmp;
+				}
+				if (j > 0 && board.isCellEnabled(j - 1, i))
+				{
+					Vegetable tmp = tmpGameBoard[j, i];
+					tmpGameBoard[j, i] = tmpGameBoard[j - 1, i];
+					tmpGameBoard[j - 1, i] = tmp;
+					if (anyMoveFromPosition(tmpGameBoard, j, i))
+					{
+						return true;
+					}
+					tmp = tmpGameBoard[j, i];
+					tmpGameBoard[j, i] = tmpGameBoard[j - 1, i];
+					tmpGameBoard[j - 1, i] = tmp;
+				}
+				if (i + 1 < board.ySize && board.isCellEnabled(j, i + 1))
+				{
+					Vegetable tmp = tmpGameBoard[j, i];
+					tmpGameBoard[j, i] = tmpGameBoard[j, i + 1];
+					tmpGameBoard[j, i + 1] = tmp;
+					if (anyMoveFromPosition(tmpGameBoard, j, i))
+					{
+						return true;
+					}
+					tmp = tmpGameBoard[j, i];
+					tmpGameBoard[j, i] = tmpGameBoard[j, i + 1];
+					tmpGameBoard[j, i + 1] = tmp;
+				}
+				if (j+1 < board.xSize && board.isCellEnabled(j + 1, i))
+				{
+					Vegetable tmp = tmpGameBoard[j, i];
+					tmpGameBoard[j, i] = tmpGameBoard[j + 1, i];
+					tmpGameBoard[j + 1, i] = tmp;
+					if (anyMoveFromPosition(tmpGameBoard, j, i))
+					{
+						return true;
+					}
+					tmp = tmpGameBoard[j, i];
+					tmpGameBoard[j, i] = tmpGameBoard[j + 1, i];
+					tmpGameBoard[j + 1, i] = tmp;
+				}
+			}
+		}
+		return false;
+	}
+	private bool anyMoveFromPosition(Vegetable[,] tmpGameBoard, int x, int y)
+	{
+		Vegetable.VegeType nowType = tmpGameBoard[x, y].Type;
+		int vert = 0;
+		int hor = 0;
+		if (y+1 < board.ySize && tmpGameBoard[x, y + 1]?.Type == nowType)
+		{
+			vert = 1;
+			if (y + 2 < board.ySize && tmpGameBoard[x, y + 2]?.Type == nowType)
+			{
+				return true;
+			}
+		}
+		if (y - 1 >=0 && tmpGameBoard[x, y - 1]?.Type == nowType)
+		{
+			if(vert == 1)
+			{
+				return true;
+			}
+			if (y - 2 >= 0 && tmpGameBoard[x, y - 2]?.Type == nowType)
+			{
+				return true;
+			}
+		}
+		if (x + 1 < board.xSize && tmpGameBoard[x + 1, y]?.Type == nowType)
+		{
+			hor = 1;
+			if (x + 2 < board.xSize && tmpGameBoard[x + 2, y]?.Type == nowType)
+			{
+				return true;
+			}
+		}
+		if (x - 1 >= 0 && tmpGameBoard[x - 1, y]?.Type == nowType)
+		{
+			if (hor == 1)
+			{
+				return true;
+			}
+			if (x - 2 >= 0 && tmpGameBoard[x - 2, y]?.Type == nowType)
+			{
+				return true;
+			}
+		}
+		return false;
 	}
 }		

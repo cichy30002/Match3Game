@@ -49,7 +49,15 @@ public class Board : MonoBehaviour
 	void FirstVegeCheck()
 	{
 		levelManager.FirstVegeCheck();
-
+		Invoke("AnyMoveCheck", 0.7f);
+	}
+	void AnyMoveCheck()
+	{
+		if (!levelManager.AnyMovePossible())
+		{
+			levelManager.ClearBoard();
+			Invoke("AnyMoveCheck", 0.7f);
+		}
 	}
 	void ProcessTextLayout(string levelLayout)
 	{
@@ -79,7 +87,6 @@ public class Board : MonoBehaviour
 			ySize++;
 		}
 		levelGrid = new int[xSize, ySize];
-		Debug.Log("Level size: x-" + xSize + " y-" + ySize);
 		for (int i = 0; i < ySize; i++)
 		{
 			for (int j = 0; j < xSize; j++)

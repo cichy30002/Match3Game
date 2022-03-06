@@ -39,7 +39,6 @@ public class GameManager : MonoBehaviour
 	{
 		if (Input.GetMouseButtonDown(0))
 		{
-			//Debug.Log(Camera.main.ScreenToWorldPoint(Input.mousePosition));
 			clickPoint = Camera.main.ScreenToWorldPoint(Input.mousePosition);
 			clickedCell = board.FindNearestCell(clickPoint);
 			if (clickedCell == new Vector2Int(-1, -1))
@@ -63,7 +62,6 @@ public class GameManager : MonoBehaviour
 				}
 				else if (Vector2Int.Distance(lastClickedCell, clickedCell) == 1)
 				{
-					//Debug.Log("Swap " + lastClickedCell + " " + clickedCell);
 					levelManager.MakeAMove(clickedCell, lastClickedCell);
 					board.SelectCell(clickedCell.x, clickedCell.y, false);
 					board.SelectCell(lastClickedCell.x, lastClickedCell.y, false);
@@ -96,7 +94,6 @@ public class GameManager : MonoBehaviour
 					}
 				}
 				levelManager.MakeAMove(clickedCell, clickedCell + result);
-				//Debug.Log(result);
 			}
 		}
 	}

@@ -5,6 +5,7 @@ using TMPro;
 using UnityEngine.UI;
 public class UIManager : MonoBehaviour
 {
+	public TrueLevelManager trueLevelManager;
 	public TMP_Text LevelText;
 	public TMP_Text PointsText;
 	public RectTransform PointsRT;
@@ -12,6 +13,7 @@ public class UIManager : MonoBehaviour
 	public GameObject TaskPrefab;
 	public TMP_Text MovesText;
 	public GameObject WinPanel;
+	public TMP_Text WinPointsText;
 	public GameObject LosePanel;
 
 	public void UpdatePoints(int points)
@@ -69,9 +71,18 @@ public class UIManager : MonoBehaviour
 			Destroy(trans.gameObject);
 		}
 	}
-	public void WinGame()
+	public void WinGame(int points)
 	{
 		WinPanel.SetActive(true);
+		WinPointsText.text = points.ToString() + " points";
+		if (Resources.Load<TextAsset>("Levels/level" + (trueLevelManager.currentLevelNumber+1).ToString()) == null)
+		{
+			WinPanel.transform.Find("Layout").Find("NextLevel").gameObject.SetActive(false);
+		}
+		else
+		{
+			WinPanel.transform.Find("Layout").Find("NextLevel").gameObject.SetActive(true);
+		}
 	}
 	public void LoseGame()
 	{

@@ -2,9 +2,9 @@
 using UnityEngine.SceneManagement;
 public class MenuManager : MonoBehaviour
 {
-    public void LoadLevel(int level)
+    public void LoadLevel(int level, int unlocked)
 	{
-		Save.SaveLevel(level);
+		Save.SaveLevel(level, unlocked);
 		SceneManager.LoadScene("Game");
 	}
 	public void LoadMenu()

@@ -351,6 +351,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   board: {fileID: 2009335421}
+  trueLevelManager: {fileID: 1608986505}
   VegePrefab: {fileID: 6655383168665898893, guid: 004af3af756bcdd478d59c950c48b31c, type: 3}
   VegetablesParent: {fileID: 742059876}
   UIManager: {fileID: 1198884005}
@@ -410,7 +411,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 325.0097, y: -428.9809}
+  m_AnchoredPosition: {x: 514.0097, y: -621.7809}
   m_SizeDelta: {x: 178.57614, y: 56.703262}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &275232222
@@ -1208,7 +1209,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 325.0097, y: -259.86548}
+  m_AnchoredPosition: {x: 514.0097, y: -356.2655}
   m_SizeDelta: {x: 178.57614, y: 56.703262}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &480679235
@@ -1757,10 +1758,10 @@ RectTransform:
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -433.4, y: 0}
-  m_SizeDelta: {x: -866.79694, y: 0}
-  m_Pivot: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 442.15265, y: 0}
+  m_Pivot: {x: 0, y: 0.5}
 --- !u!114 &733824306
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1911,7 +1912,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0.000005722, y: 186.05}
+  m_AnchoredPosition: {x: 0, y: 186.05}
   m_SizeDelta: {x: 233.10156, y: 77.10385}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &938386184
@@ -2387,7 +2388,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 325.0097, y: -169.9136}
+  m_AnchoredPosition: {x: 514.0097, y: -218.11362}
   m_SizeDelta: {x: 465.71863, y: 67.49164}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1159996643
@@ -2501,6 +2502,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9936a267e4d6af849b88d3803367467d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  trueLevelManager: {fileID: 1608986505}
   LevelText: {fileID: 1941972278}
   PointsText: {fileID: 385500375}
   PointsRT: {fileID: 385500374}
@@ -2508,6 +2510,7 @@ MonoBehaviour:
   TaskPrefab: {fileID: 1894223432867400787, guid: a17163e739e34184d9af9ed21b3cb32d, type: 3}
   MovesText: {fileID: 1751946778}
   WinPanel: {fileID: 521031085}
+  WinPointsText: {fileID: 938806315}
   LosePanel: {fileID: 726115527}
 --- !u!4 &1198884006
 Transform:
@@ -2823,7 +2826,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0.00021362, y: 45.7}
+  m_AnchoredPosition: {x: 0.00021362305, y: 45.7}
   m_SizeDelta: {x: 200, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1425426763
@@ -2959,7 +2962,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 325.0097, y: -344.4232}
+  m_AnchoredPosition: {x: 514.0097, y: -489.0232}
   m_SizeDelta: {x: 178.57614, y: 56.703262}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1527471349
@@ -3301,7 +3304,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   board: {fileID: 2009335421}
-  levelNumber: 1
+  currentLevelNumber: 1
+  unlockedLevelNumber: 1
 --- !u!4 &1608986506
 Transform:
   m_ObjectHideFlags: 0
@@ -3890,7 +3894,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 325.0097, y: -64.15668}
+  m_AnchoredPosition: {x: 514.0097, y: -64.15668}
   m_SizeDelta: {x: 492.5749, y: 88.313354}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1926573231
@@ -4024,7 +4028,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0.00021362, y: 249.6}
+  m_AnchoredPosition: {x: 0.00021362305, y: 249.6}
   m_SizeDelta: {x: 200, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1941972278
@@ -4288,7 +4292,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   levelManager: {fileID: 248903614}
-  LevelLayoutTxt: {fileID: 4900000, guid: 8766aaf478e8cbf4191197c7b38bd0cb, type: 3}
+  LevelLayoutTxt: {fileID: 4900000, guid: 1cf991a9be8715440b82235d41bbdd82, type: 3}
   MissionTxt: {fileID: 4900000, guid: 2c2431705d80e9442afde48ac65c195e, type: 3}
   CellPrefab: {fileID: 5275000397810199690, guid: 406b5655ba3d5a8488cbec7029239d28, type: 3}
   CellSize: 1.03
