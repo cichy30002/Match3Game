@@ -26,7 +26,7 @@ public class TrueLevelManager : MonoBehaviour
 	public void NextLevel()
 	{
 		currentLevelNumber++;
-		unlockedLevelNumber = Mathf.Max(currentLevelNumber, unlockedLevelNumber + 1);
+		unlockedLevelNumber = Mathf.Max(currentLevelNumber, unlockedLevelNumber);
 		Save.SaveLevel(currentLevelNumber, unlockedLevelNumber);
 		LoadLevel();
 	}

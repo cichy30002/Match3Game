@@ -72,8 +72,8 @@ SpriteRenderer:
   m_SortingLayerID: 54411875
   m_SortingLayer: 2
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: 75d833265e2ccf84585a7f0b2f0fc426, type: 3}
-  m_Color: {r: 0.13679248, g: 0.17666405, b: 1, a: 0.43137255}
+  m_Sprite: {fileID: 21300000, guid: ae87458bf1337774a9831fc99be3b2dc, type: 3}
+  m_Color: {r: 0.383826, g: 0.80249065, b: 0.90099996, a: 0.54901963}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -96,6 +96,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   spriteRenderer: {fileID: 2741283313873663953}
-  ActiveSprite: {fileID: 21300000, guid: 75d833265e2ccf84585a7f0b2f0fc426, type: 3}
+  ActiveSprite: {fileID: 21300000, guid: 21d6ccf03dddc234390aa40aff8bdfa8, type: 3}
   DisabledSprite: {fileID: 0}
-  SelectedSprite: {fileID: 21300000, guid: cf42f53f425cf744880e0c6627c4674e, type: 3}
+  SelectedSprite: {fileID: 21300000, guid: 62e9cb18163a7404eb5c8a0240110590, type: 3}
