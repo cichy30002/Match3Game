@@ -1,0 +1,4 @@
+Moves 25
+Potato 40
+Garlic 30
+Broccoli 20

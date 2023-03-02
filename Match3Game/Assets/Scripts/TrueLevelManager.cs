@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -25,15 +26,14 @@ public class TrueLevelManager : MonoBehaviour
 	}
 	public void NextLevel()
 	{
-		currentLevelNumber++;
-		unlockedLevelNumber = Mathf.Max(currentLevelNumber, unlockedLevelNumber);
-		Save.SaveLevel(currentLevelNumber, unlockedLevelNumber);
+		unlockedLevelNumber = Mathf.Max(currentLevelNumber+1, unlockedLevelNumber);
+		Save.SaveLevel(currentLevelNumber+1, unlockedLevelNumber);
 		LoadLevel();
 	}
-	public void UnlockLevel()
+	public void UnlockNextLevel()
 	{
-		unlockedLevelNumber++;
-		Save.SaveLevel(currentLevelNumber, unlockedLevelNumber);
+		var nextUnlockedLevel = math.max(currentLevelNumber + 1, unlockedLevelNumber);
+		Save.SaveLevel(currentLevelNumber, nextUnlockedLevel);
 	}
 	public void LoadMenu()
 	{

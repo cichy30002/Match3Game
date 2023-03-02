@@ -884,7 +884,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f06e9001c86d62348b1aa46aa1481b17, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  levels: 3
+  levels: 10
   levelButtonPrefab: {fileID: 8746089892052020121, guid: a8d9571da9b14454ba3dd62c747a41aa, type: 3}
   menuManager: {fileID: 984564665}
 --- !u!1 &2118055358

@@ -311,7 +311,7 @@ public class LevelManager : MonoBehaviour
 			DrawLine(triplet);
 			if (triplet.Length>3)
 			{
-				Debug.Log(debug(triplet) + " " +  triplet.Length.ToString());
+				//Debug.Log(debug(triplet) + " " +  triplet.Length.ToString());
 			}
 			AddPoints(triplet);
 			foreach (Vector2Int vege in triplet)
@@ -527,7 +527,7 @@ public class LevelManager : MonoBehaviour
 			yield return null;
 		}
 		UIManager.WinGame(points);
-		trueLevelManager.UnlockLevel();
+		trueLevelManager.UnlockNextLevel();
 		board.EndGame();
 	}
 	public IEnumerator LoseGame()
@@ -630,6 +630,7 @@ public class LevelManager : MonoBehaviour
 		{
 			for (int j = 0; j < board.xSize; j++)
 			{
+				if (!board.isCellEnabled(j, i)) continue;
 				if(i>0 && board.isCellEnabled(j,i-1))
 				{
 					Vegetable tmp = tmpGameBoard[j, i];

@@ -6,6 +6,7 @@ public static class Save
 {
     public static void SaveLevel(int level, int unlocked)
 	{
+		Debug.Log("saving: level="+ level.ToString() +" unlocked="+unlocked.ToString());
 		BinaryFormatter formatter = new BinaryFormatter();
 		string path = Application.persistentDataPath + "/save.data";
 		FileStream stream = new FileStream(path, FileMode.Create);

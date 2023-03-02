@@ -1,5 +1,5 @@
 Moves 5
-Chili 3
-Broccoli 2
 Potato 1
-Garlic 7
+Broccoli 2
+Chili 3
+Garlic 4

@@ -1,5 +1,5 @@
-Moves 20
-Chili 10
-Broccoli 10
-Garlic 10
-Eggplant 10
+Moves 12
+Chili 6
+Broccoli 6
+Garlic 6
+Eggplant 6

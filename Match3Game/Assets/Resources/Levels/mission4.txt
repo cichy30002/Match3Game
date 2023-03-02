@@ -1,0 +1,5 @@
+Moves 15
+Potato 10
+Eggplant 8
+Garlic 5
+Broccoli 13

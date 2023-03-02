@@ -1,0 +1,3 @@
+Moves 20
+Broccoli 5
+Garlic 18
